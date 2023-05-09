@@ -7,6 +7,13 @@ module.exports = {
       fontFamily: {
         sans: ['Raleway', ...defaultTheme.fontFamily.sans],
       },
+      keyframes: {
+        wobble: {
+          '50%': {
+            'border-radius': '250px',
+          },
+        },
+      },
     },
   },
   plugins: [],
