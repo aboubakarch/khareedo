@@ -1,11 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { category, getBestSeller, getBestSellerByCategoryId } from '../../data';
 import FilterIcon from '../../svgs/Filter';
 import Button from '../common/Button';
 import Container from '../common/Container';
 import ProductCard from '../common/ProductCard';
 import Row from '../common/Row';
 
+// useEffect(()=>{
+// This will re-execute every time when state or props updated
+// })
+
+// useEffect(()=>{
+// This will re-execute every time only when products will updated
+// },[products])
+
+// useEffect(()=>{
+// This will execute only once
+// },[])
+
 const BestSeller = () => {
+  const [products, setProducts] = useState();
+  const [categories, setCategories] = useState();
+  const [selectedCategory, setSelectedCat] = useState(-1);
+
+  const handleCategoryClick = (id) => {
+    const prods = id === -1 ? getBestSeller() : getBestSellerByCategoryId(id);
+    setSelectedCat(id);
+    setProducts(prods);
+  };
+
+  const getCategoryClasses = (id) => {
+    return `text-[16px] ${
+      selectedCategory === id ? 'font-semibold text-black' : 'text-[#00000080]'
+    } mr-[40px] cursor-pointer hover:text-[#757575]`;
+  };
+
+  useEffect(() => {
+    setCategories(category);
+    const bestSeller = getBestSeller();
+    setProducts(bestSeller);
+  }, []);
+
   return (
     <Container>
       <h1 className="w-full text-center text-[50px] text-black font-medium mt-[140px]">
@@ -13,18 +48,21 @@ const BestSeller = () => {
       </h1>
       <Row className="my-[35px] justify-between items-center">
         <Row>
-          <p className="text-[16px] font-semibold text-black mr-[40px] cursor-pointer hover:text-[#757575]">
+          <p
+            className={getCategoryClasses(-1)}
+            onClick={() => handleCategoryClick(-1)}
+          >
             All Products
           </p>
-          <p className="text-[16px] text-[#00000080] mr-[40px] cursor-pointer hover:text-[#272727]">
-            T-Shirts
-          </p>
-          <p className="text-[16px] text-[#00000080] mr-[40px] cursor-pointer hover:text-[#272727]">
-            Hoodies
-          </p>
-          <p className="text-[16px] text-[#00000080] cursor-pointer hover:text-[#272727]">
-            Jacket
-          </p>
+          {categories?.map(({ id, name }) => (
+            <p
+              onClick={() => handleCategoryClick(id)}
+              key={id}
+              className={getCategoryClasses(id)}
+            >
+              {name}
+            </p>
+          ))}
         </Row>
         <Button
           title="Filter"
@@ -34,78 +72,13 @@ const BestSeller = () => {
         />
       </Row>
       <Row className="flex-wrap justify-between">
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
-        <ProductCard
-          className="!w-[24%] mb-[24px]"
-          data={{
-            image: '/imgs/14.png',
-            title: 'Adicolor Classics Joggers',
-            category: 'Dress',
-            price: '$200.00',
-          }}
-        />
+        {products?.map((product) => (
+          <ProductCard
+            key={product.id}
+            className="!w-[24%] mb-[24px]"
+            data={product}
+          />
+        ))}
       </Row>
     </Container>
   );

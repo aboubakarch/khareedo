@@ -4,7 +4,11 @@ import Row from './Row';
 const ProductCard = ({ className = '', data }) => {
   return (
     <div className={`w-full ${className}`}>
-      <img src={data.image} alt="product" />
+      <img
+        src={data.img}
+        alt="product"
+        className="h-[400px] object-cover w-full"
+      />
       <Row className="px-[10px]">
         <h6 className="text-[16px] text-black font-semibold mt-[18px]">
           {data.title}
