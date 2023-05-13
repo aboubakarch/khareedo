@@ -72,13 +72,19 @@ const BestSeller = () => {
         />
       </Row>
       <Row className="flex-wrap justify-between">
-        {products?.map((product) => (
-          <ProductCard
-            key={product.id}
-            className="!w-[24%] mb-[24px]"
-            data={product}
-          />
-        ))}
+        {products?.length > 0 ? (
+          products?.map((product) => (
+            <ProductCard
+              key={product.id}
+              className="!w-[24%] mb-[24px]"
+              data={product}
+            />
+          ))
+        ) : (
+          <Row className="h-[200px] items-center justify-center w-full">
+            <p className="text-[#666666] text-[14px]">No product found.</p>
+          </Row>
+        )}
       </Row>
     </Container>
   );

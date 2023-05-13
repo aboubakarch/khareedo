@@ -116,9 +116,9 @@ export const products = [
   },
 ];
 
-export const sortProductDescByRating = () => {
+export const sortProductDescByRating = (numberOfProducts = 8) => {
   const prods = products.sort((a, b) => b.rating - a.rating);
-  return prods.slice(0, 8);
+  return prods.slice(0, numberOfProducts);
 };
 
 const appendCategoryNames = (bestSeller) => {
@@ -135,5 +135,6 @@ export const getBestSeller = () => {
 
 export const getBestSellerByCategoryId = (id) => {
   const bestSeller = sortProductDescByRating();
-  return appendCategoryNames(bestSeller.filter((item) => item.category === id));
+  const prods = bestSeller.filter((item) => item.category === id);
+  return appendCategoryNames(prods);
 };
