@@ -1,8 +1,15 @@
 import React from 'react';
 
-const Button = ({ title = '', Icon, iconColor = '', className = '' }) => {
+const Button = ({
+  title = '',
+  Icon,
+  iconColor = '',
+  className = '',
+  ...resetProps
+}) => {
   return (
     <button
+      {...resetProps}
       className={`mt-[66px] flex items-center text-white bg-black px-[26px] py-[16px] text-[22px] ${className}`}
     >
       {Icon && <Icon color={iconColor} />}

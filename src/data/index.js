@@ -15,6 +15,14 @@ export const category = [
     id: 4,
     name: 'Shoes',
   },
+  {
+    id: 5,
+    name: 'Bags',
+  },
+  {
+    id: 7,
+    name: 'Jacket',
+  },
 ];
 
 export const products = [
@@ -137,4 +145,10 @@ export const getBestSellerByCategoryId = (id) => {
   const bestSeller = sortProductDescByRating();
   const prods = bestSeller.filter((item) => item.category === id);
   return appendCategoryNames(prods);
+};
+
+export const getProductById = (id) => {
+  const product = products.find((item) => item.id.toString() === id);
+  const cat = category.find((item) => item.id === product.category);
+  return { ...product, category: cat.name };
 };
