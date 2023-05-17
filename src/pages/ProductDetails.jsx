@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from '../components/common/Button';
 import Container from '../components/common/Container';
 import Row from '../components/common/Row';
@@ -8,6 +8,7 @@ import CartContext from '../contextAPIs/cartConext';
 import { getProductById } from '../data';
 import { PAGES_ROUTES } from '../routes';
 import Star from '../svgs/Star';
+import { handleDecrease, handleIncrease } from '../utils/cartManagement';
 
 /* 
 [{
@@ -20,37 +21,33 @@ const ProductDetails = () => {
   const { cartProduct, setCartProduct } = useContext(CartContext);
   const params = useParams();
   const [data, setData] = useState();
-  const [qty, setQty] = useState(0);
+  const history = useHistory();
 
-  const handleIncrease = () => {
-    setQty((prev) => prev + 1);
+  const handleInc = () => {
+    const cp = handleIncrease(cartProduct, params.id);
+    setCartProduct(cp);
   };
 
-  const handleDecrease = () => {
-    setQty((prev) => (prev ? prev - 1 : prev));
+  const handleDec = () => {
+    const cp = handleDecrease(cartProduct, params.id);
+    setCartProduct(cp);
   };
 
   const handleAddToCart = () => {
     const ctp = [...(cartProduct || [])];
-    const prod = ctp.find((prod) => prod.productId === params.id);
-    const pIdx = prod ? ctp.indexOf(prod) : -1;
-    if (!prod) {
-      ctp.push({ productId: params.id, qty });
-      setCartProduct(ctp);
-    } else if (prod.qty !== qty) {
-      prod.qty = qty;
-      ctp[pIdx] = prod;
-      setCartProduct(ctp);
-    }
+    ctp.push({ productId: params.id, qty: 1 });
+    setCartProduct(ctp);
+    history.push(PAGES_ROUTES.cart);
+  };
+
+  const getQty = () => {
+    const prod = cartProduct?.find((item) => item.productId === params.id);
+    if (prod) return prod.qty;
+    return 0;
   };
 
   useEffect(() => {
     const pData = getProductById(params.id);
-
-    const prod = cartProduct?.find((item) => item.productId === params.id);
-    if (prod) {
-      setQty(prod.qty);
-    }
     setData(pData);
   }, []);
 
@@ -67,11 +64,7 @@ const ProductDetails = () => {
           </Row>
           <Row className="flex-col w-[47%]">
             <h1 className="text-[30px] text-slate-700 font-semibold">
-              {data?.category} |{' '}
-              <span>
-                {data?.title}
-                {/* <div className="h-[5px] w-[150px] bg-slate-700" /> */}
-              </span>
+              {data?.category} | <span>{data?.title}</span>
             </h1>
             <Row className="mt-7">
               {[...new Array(data?.rating || 0)].map((_, idx) => (
@@ -100,25 +93,27 @@ const ProductDetails = () => {
 
             <Row className="mt-[100px] items-center">
               <Button
-                onClick={handleDecrease}
+                onClick={handleDec}
                 className="!mt-0 font-semibold py-[10px]"
                 title="-"
               />
               <p className="w-[70px] text-center text-[16px] font-semibold">
-                {qty}
+                {getQty()}
               </p>
               <Button
-                onClick={handleIncrease}
+                onClick={handleInc}
                 className="!mt-0 font-semibold py-[10px]"
                 title="+"
               />
             </Row>
             <Row className="mt-7 gap-[10px]">
-              <Button
-                onClick={handleAddToCart}
-                className="!mt-0 font-semibold py-[10px] !px-[35px]"
-                title="+ Add to cart"
-              />
+              {getQty() <= 0 && (
+                <Button
+                  onClick={handleAddToCart}
+                  className="!mt-0 font-semibold py-[10px] !px-[35px]"
+                  title="+ Add to cart"
+                />
+              )}
               <Link to={PAGES_ROUTES.cart}>
                 <Button
                   className="!mt-0 font-semibold py-[10px] !px-[35px]"

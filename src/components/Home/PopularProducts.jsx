@@ -21,7 +21,7 @@ const PopularProducts = () => {
             Explore new and popular styles
           </p>
         </div>
-        <Link to={`${PAGES_ROUTES.products}/${products?.[0].id}`}>
+        <Link to={`${PAGES_ROUTES.productDetails}/${products?.[0].id}`}>
           <img
             className="w-[648px] h-[648px] object-cover cursor-pointer"
             src={products?.[0].img}
@@ -31,7 +31,7 @@ const PopularProducts = () => {
         <Row className="flex-wrap w-1/2 gap-[24px]">
           {products?.slice(1).map((product) => (
             <div className="w-[46%] cursor-pointer" key={product.id}>
-              <Link to={`${PAGES_ROUTES.products}${product.id}`}>
+              <Link to={`${PAGES_ROUTES.productDetails}/${product.id}`}>
                 <img
                   src={product.img}
                   alt={product.title}

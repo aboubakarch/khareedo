@@ -9,9 +9,9 @@ export const PAGES_ROUTES = {
 };
 
 const routes = [
-  { path: PAGES_ROUTES.home, element: <Home /> },
-  { path: `${PAGES_ROUTES.productDetails}/:id`, element: <ProductDetails /> },
-  { path: PAGES_ROUTES.cart, element: <Cart /> },
+  { path: PAGES_ROUTES.home, Component: Home },
+  { path: `${PAGES_ROUTES.productDetails}/:id`, Component: ProductDetails },
+  { path: PAGES_ROUTES.cart, Component: Cart },
 ];
 
 export default routes;
