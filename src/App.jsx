@@ -1,18 +1,21 @@
+import { useState } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Layout from './components/Layout';
+import CartContext from './contextAPIs/cartConext';
 import routes from './routes';
 
 function App() {
+  const [cartProduct, setCartProduct] = useState();
+
   return (
-    <BrowserRouter>
-      <Layout>
+    <CartContext.Provider value={{ cartProduct, setCartProduct }}>
+      <BrowserRouter>
         <Routes>
           {routes.map(({ path, element }) => (
-            <Route path={path} element={element} />
+            <Route path={path} element={element} key={path} />
           ))}
         </Routes>
-      </Layout>
-    </BrowserRouter>
+      </BrowserRouter>
+    </CartContext.Provider>
   );
 }
 

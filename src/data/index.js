@@ -149,6 +149,6 @@ export const getBestSellerByCategoryId = (id) => {
 
 export const getProductById = (id) => {
   const product = products.find((item) => item.id.toString() === id);
-  const cat = category.find((item) => item.id === product.category);
-  return { ...product, category: cat.name };
+  const cat = category.find((item) => item.id === product?.category);
+  return { ...product, category: cat?.name };
 };

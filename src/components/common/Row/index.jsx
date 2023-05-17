@@ -1,7 +1,11 @@
 import React from 'react';
 
-const Row = ({ children, className }) => {
-  return <div className={`flex ${className}`}>{children}</div>;
+const Row = ({ children, className, ...restProps }) => {
+  return (
+    <div className={`flex ${className}`} {...restProps}>
+      {children}
+    </div>
+  );
 };
 
 export default Row;

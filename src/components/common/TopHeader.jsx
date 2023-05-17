@@ -1,4 +1,7 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { PAGES_ROUTES } from '../../routes';
+
 import BucketIcon from '../../svgs/BucketIcon';
 import RotatedSquare from '../../svgs/RotatedSquare';
 import SearchIcon from '../../svgs/SearchIcon';
@@ -20,11 +23,13 @@ const TopHeader = () => {
           </Row>
           <Row>
             <HeaderButton Icon={UserIcon} title="Account" />
-            <HeaderButton
-              Icon={BucketIcon}
-              title="Cart"
-              className="ml-[22px]"
-            />
+            <Link to={PAGES_ROUTES.cart}>
+              <HeaderButton
+                Icon={BucketIcon}
+                title="Cart"
+                className="ml-[22px] cursor-pointer"
+              />
+            </Link>
           </Row>
         </Row>
       </Container>

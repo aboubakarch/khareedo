@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { PAGES_ROUTES } from '../../routes';
 import Row from './Row';
 
 const ProductCard = ({ className = '', data }) => {
   return (
     <div className={`w-full ${className}`}>
-      <Link className="w-full" to={`/product/${data.id}`}>
+      <Link className="w-full" to={`${PAGES_ROUTES.productDetails}/${data.id}`}>
         <img
           src={data.img}
           alt="product"
