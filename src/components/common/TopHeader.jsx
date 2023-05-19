@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
+import CartContext from '../../contextAPIs/cartConext';
 import { PAGES_ROUTES } from '../../routes';
 
 import BucketIcon from '../../svgs/BucketIcon';
@@ -11,6 +12,9 @@ import Container from './Container';
 import Row from './Row';
 
 const TopHeader = () => {
+  const { cartProduct } = useContext(CartContext);
+  const cartItemsCount = cartProduct?.length || 0;
+
   return (
     <div className="w-full bg-[#1e28320d] h-[60px]">
       <Container className="h-full">
@@ -27,8 +31,14 @@ const TopHeader = () => {
               <HeaderButton
                 Icon={BucketIcon}
                 title="Cart"
-                className="ml-[22px] cursor-pointer"
-              />
+                className="ml-[22px] cursor-pointer relative"
+              >
+                {cartItemsCount > 0 && (
+                  <span className="absolute h-[16px] w-[16px] text-center text-white text-[10px] font-extrabold bg-[#ff5722] rounded-full left-[12px] -top-1">
+                    {cartItemsCount}
+                  </span>
+                )}
+              </HeaderButton>
             </Link>
           </Row>
         </Row>

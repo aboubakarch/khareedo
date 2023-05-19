@@ -1,31 +1,19 @@
-import React, { useContext, useEffect, useState } from 'react';
-import CartContext from '../../contextAPIs/cartConext';
+import React, { useEffect, useState } from 'react';
 import { getProductById } from '../../data';
-import { handleDecrease, handleIncrease } from '../../utils/cartManagement';
-import Button from '../common/Button';
+import { getPrice } from '../../utils/cartManagement';
+import QtyCounter from '../common/QtyCounter';
 import Row from '../common/Row';
 
 const CartItem = ({ data }) => {
   const [product, setProduct] = useState();
-  const { cartProduct, setCartProduct } = useContext(CartContext);
 
   const getSubTotal = () => {
     if (product?.id) {
-      const price = product.price.replace('$', '');
-      const total = parseInt(price) * data?.qty;
+      const price = getPrice(product?.price);
+      const total = price * data?.qty;
       return `$${total}`;
     }
     return 'N/A';
-  };
-
-  const handleInc = () => {
-    const cp = handleIncrease(cartProduct, data?.productId);
-    setCartProduct(cp);
-  };
-
-  const handleDec = () => {
-    const cp = handleDecrease(cartProduct, data?.productId);
-    setCartProduct(cp);
   };
 
   useEffect(() => {
@@ -49,21 +37,7 @@ const CartItem = ({ data }) => {
         <p className="w-[20%] text-[16px] text-black font-medium">
           {product?.price}
         </p>
-        <Row className="items-center w-[20%]">
-          <Button
-            title="-"
-            className="!py-[0px] !px-[10px] !mt-[0px]"
-            onClick={handleDec}
-          />
-          <p className="w-[20%] text-[16px] text-black font-medium text-center">
-            {data?.qty}
-          </p>
-          <Button
-            title="+"
-            className="!py-[0px] !px-[10px] !mt-[0px]"
-            onClick={handleInc}
-          />
-        </Row>
+        <QtyCounter data={product} />
         <p className="w-[20%] text-[16px] text-black font-medium">
           {getSubTotal()}
         </p>

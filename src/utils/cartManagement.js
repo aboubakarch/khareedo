@@ -26,3 +26,10 @@ export const handleDecrease = (cartProduct, pid) => {
     return _cartProduct;
   }
 };
+
+export const getPrice = (p = '0') => {
+  let price = p.replace('$', '');
+  price = parseInt(price);
+
+  return price || 0;
+};

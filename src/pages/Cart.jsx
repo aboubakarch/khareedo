@@ -1,12 +1,17 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import CartItem from '../components/Cart/CartItem';
+import Button from '../components/common/Button';
 import Container from '../components/common/Container';
 import Row from '../components/common/Row';
 import Layout from '../components/Layout';
 import CartContext from '../contextAPIs/cartConext';
+import { PAGES_ROUTES } from '../routes';
 
 const Cart = () => {
   const { cartProduct } = useContext(CartContext);
+  const router = useHistory();
+
   return (
     <Layout>
       <Container className="py-6">
@@ -37,6 +42,11 @@ const Cart = () => {
         ) : (
           <p>No Product Found in Cart</p>
         )}
+        <Button
+          onClick={() => router.push(PAGES_ROUTES.checkout)}
+          title="Proceed to Checkout"
+          className="w-full py-2 justify-center"
+        />
       </Container>
     </Layout>
   );
