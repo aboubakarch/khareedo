@@ -1,32 +1,56 @@
+import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import { category, getBestSeller, getBestSellerByCategoryId } from '../../data';
+import Skeleton from 'react-loading-skeleton';
+import { getBestSeller, getBestSellerByCategoryId } from '../../data';
 import FilterIcon from '../../svgs/Filter';
 import Button from '../common/Button';
 import Container from '../common/Container';
 import ProductCard from '../common/ProductCard';
 import Row from '../common/Row';
-
-// useEffect(()=>{
-// This will re-execute every time when state or props updated
-// })
-
-// useEffect(()=>{
-// This will re-execute every time only when products will updated
-// },[products])
-
-// useEffect(()=>{
-// This will execute only once
-// },[])
+import ProductSkelton from './ProductSkelton';
 
 const BestSeller = () => {
   const [products, setProducts] = useState();
+  const [loadingProduct, setLoadingProducts] = useState(false);
+  const [loadingCategories, setLoadingCat] = useState(false);
   const [categories, setCategories] = useState();
   const [selectedCategory, setSelectedCat] = useState(-1);
 
+  const getProducts = async (id = '') => {
+    try {
+      const res = await axios.get(
+        `http://localhost:3000/products${id ? `?cid=${id}` : ''}`
+      );
+      setProducts(res.data);
+      setLoadingProducts(false);
+    } catch (error) {
+      setLoadingProducts(false);
+      console.log(error);
+    }
+  };
+
+  const getCategories = async () => {
+    try {
+      const resCat = await axios.get('http://localhost:3000/categories');
+      setCategories(resCat.data);
+      setLoadingCat(false);
+    } catch (error) {
+      setLoadingCat(false);
+      console.log(error);
+    }
+  };
+
   const handleCategoryClick = (id) => {
-    const prods = id === -1 ? getBestSeller() : getBestSellerByCategoryId(id);
+    setLoadingProducts(true);
+    getProducts(id === -1 ? '' : id);
     setSelectedCat(id);
-    setProducts(prods);
+  };
+
+  const getInitialData = async () => {
+    setLoadingCat(true);
+    setLoadingProducts(true);
+    getCategories();
+    getProducts();
   };
 
   const getCategoryClasses = (id) => {
@@ -36,9 +60,7 @@ const BestSeller = () => {
   };
 
   useEffect(() => {
-    setCategories(category);
-    const bestSeller = getBestSeller();
-    setProducts(bestSeller);
+    getInitialData();
   }, []);
 
   return (
@@ -47,22 +69,31 @@ const BestSeller = () => {
         Best Seller Products
       </h1>
       <Row className="my-[35px] justify-between items-center">
-        <Row>
+        <Row className="items-center">
           <p
             className={getCategoryClasses(-1)}
             onClick={() => handleCategoryClick(-1)}
           >
             All Products
           </p>
-          {categories?.map(({ id, name }) => (
-            <p
-              onClick={() => handleCategoryClick(id)}
-              key={id}
-              className={getCategoryClasses(id)}
-            >
-              {name}
-            </p>
-          ))}
+          {loadingCategories ? (
+            <>
+              <Skeleton width="150px" height="50px" />
+              <Skeleton width="150px" height="50px" />
+              <Skeleton width="150px" height="50px" />
+              <Skeleton width="150px" height="50px" />
+            </>
+          ) : (
+            categories?.map(({ id, name }) => (
+              <p
+                onClick={() => handleCategoryClick(id)}
+                key={id}
+                className={getCategoryClasses(id)}
+              >
+                {name}
+              </p>
+            ))
+          )}
         </Row>
         <Button
           title="Filter"
@@ -72,7 +103,9 @@ const BestSeller = () => {
         />
       </Row>
       <Row className="flex-wrap justify-between">
-        {products?.length > 0 ? (
+        {loadingProduct ? (
+          [...new Array(8)].map((_, idx) => <ProductSkelton key={idx} />)
+        ) : products?.length > 0 ? (
           products?.map((product) => (
             <ProductCard
               key={product.id}

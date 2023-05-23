@@ -1,34 +1,41 @@
 import { useFormikContext } from 'formik';
 import React from 'react';
 
-const Input = ({
+const RadioButton = ({
   className = '',
   labelClass = '',
   inputClass = '',
   type = 'text',
   name,
+  value,
   id,
   placeholder,
   label,
 }) => {
-  const { handleChange, handleBlur, values, errors, touched } =
+  const { handleChange, handleBlur, values, errors, touched, setFieldValue } =
     useFormikContext() || {};
+
+  const handleRadioChange = (e) => {
+    const { value } = e.target;
+    setFieldValue(value, values[value] ? false : true);
+    handleChange(e);
+  };
   return (
     <div className={`flex flex-col ${className}`}>
       {label && (
         <label
-          htmlFor={name || id}
           className={`text-[16px] text-gray-700 font-medium mb-[5px] cursor-pointer ${labelClass}`}
         >
           {label}
         </label>
       )}
       <input
-        onChange={handleChange}
+        onChange={handleRadioChange}
         onBlur={handleBlur}
-        value={values[name]}
         type={type}
         name={name}
+        value={value}
+        checked={values[value]}
         id={id || name}
         placeholder={placeholder}
         className={`border-[1px] border-slate-800 outline-none h-[40px] px-[5px] ${inputClass}`}
@@ -40,4 +47,4 @@ const Input = ({
   );
 };
 
-export default Input;
+export default RadioButton;
