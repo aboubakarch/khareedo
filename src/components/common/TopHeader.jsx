@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import CartContext from '../../contextAPIs/cartConext';
 import { PAGES_ROUTES } from '../../routes';
@@ -13,6 +14,7 @@ import Row from './Row';
 
 const TopHeader = () => {
   const { cartProduct } = useContext(CartContext);
+  const router = useHistory();
   const cartItemsCount = cartProduct?.length || 0;
 
   return (
@@ -20,7 +22,10 @@ const TopHeader = () => {
       <Container className="h-full">
         <Row className="items-center justify-between w-full h-full border-b-[1px] border-[#E3E3E3]">
           <SearchIcon />
-          <Row className="items-center">
+          <Row
+            className="items-center cursor-pointer"
+            onClick={() => router.push('/')}
+          >
             <RotatedSquare />
             <h2 className="text-[28px] text-[#000000] mx-[10px]">Khareedo</h2>
             <RotatedSquare />

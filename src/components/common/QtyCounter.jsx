@@ -28,6 +28,7 @@ const QtyCounter = ({ data, className = '' }) => {
   return (
     <Row className={`items-center w-[20%] ${className}`}>
       <Button
+        disabled={!data}
         title="-"
         className="!py-[0px] !px-[10px] !mt-[0px]"
         onClick={handleDec}
@@ -36,6 +37,7 @@ const QtyCounter = ({ data, className = '' }) => {
         {getQty()}
       </p>
       <Button
+        disabled={!data}
         title="+"
         className="!py-[0px] !px-[10px] !mt-[0px]"
         onClick={handleInc}

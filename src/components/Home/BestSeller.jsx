@@ -2,6 +2,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
 import { getBestSeller, getBestSellerByCategoryId } from '../../data';
+import client from '../../service';
 import FilterIcon from '../../svgs/Filter';
 import Button from '../common/Button';
 import Container from '../common/Container';
@@ -18,9 +19,7 @@ const BestSeller = () => {
 
   const getProducts = async (id = '') => {
     try {
-      const res = await axios.get(
-        `http://localhost:3000/products${id ? `?cid=${id}` : ''}`
-      );
+      const res = await client.get(`/products${id ? `?cid=${id}` : ''}`);
       setProducts(res.data);
       setLoadingProducts(false);
     } catch (error) {
@@ -31,7 +30,7 @@ const BestSeller = () => {
 
   const getCategories = async () => {
     try {
-      const resCat = await axios.get('http://localhost:3000/categories');
+      const resCat = await client.get('/categories');
       setCategories(resCat.data);
       setLoadingCat(false);
     } catch (error) {

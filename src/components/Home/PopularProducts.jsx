@@ -1,16 +1,29 @@
 import React, { useEffect, useState } from 'react';
+import Skeleton from 'react-loading-skeleton';
 import { Link } from 'react-router-dom';
-import { sortProductDescByRating } from '../../data';
 import { PAGES_ROUTES } from '../../routes';
+import client from '../../service';
 import Container from '../common/Container';
 import Row from '../common/Row';
 
 const PopularProducts = () => {
   const [products, setProducts] = useState();
+  const [loading, setLoading] = useState(false);
+
+  const getData = async () => {
+    try {
+      setLoading(true);
+      const res = await client.get('/products?count=5');
+      setProducts(res.data);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const prods = sortProductDescByRating(5);
-    setProducts(prods);
+    getData();
   }, []);
 
   return (
@@ -21,25 +34,37 @@ const PopularProducts = () => {
             Explore new and popular styles
           </p>
         </div>
-        <Link to={`${PAGES_ROUTES.productDetails}/${products?.[0].id}`}>
-          <img
-            className="w-[648px] h-[648px] object-cover cursor-pointer"
-            src={products?.[0].img}
-            alt="popular"
-          />
-        </Link>
+        {loading ? (
+          <div className="w-[648px] h-[648px]">
+            <Skeleton height={'100%'} />
+          </div>
+        ) : (
+          <Link to={`${PAGES_ROUTES.productDetails}/${products?.[0].id}`}>
+            <img
+              className="w-[648px] h-[648px] object-cover cursor-pointer"
+              src={products?.[0].img}
+              alt="popular"
+            />
+          </Link>
+        )}
         <Row className="flex-wrap w-1/2 gap-[24px]">
-          {products?.slice(1).map((product) => (
-            <div className="w-[46%] cursor-pointer" key={product.id}>
-              <Link to={`${PAGES_ROUTES.productDetails}/${product.id}`}>
-                <img
-                  src={product.img}
-                  alt={product.title}
-                  className="w-[312px] h-[312px] object-cover"
-                />
-              </Link>
-            </div>
-          ))}
+          {loading
+            ? [...new Array(4)].map((_, idx) => (
+                <div className="w-[46%] h-[312px]">
+                  <Skeleton height="100%" />
+                </div>
+              ))
+            : products?.slice(1).map((product) => (
+                <div className="w-[46%] cursor-pointer" key={product.id}>
+                  <Link to={`${PAGES_ROUTES.productDetails}/${product.id}`}>
+                    <img
+                      src={product.img}
+                      alt={product.title}
+                      className="w-[312px] h-[312px] object-cover"
+                    />
+                  </Link>
+                </div>
+              ))}
         </Row>
       </Row>
     </Container>
