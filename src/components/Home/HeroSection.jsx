@@ -1,5 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import React from 'react';
+import { Link } from 'react-router-dom';
 import BucketIcon from '../../svgs/BucketIcon';
 import Button from '../common/Button';
 import Container from '../common/Container';
@@ -16,7 +17,9 @@ const HeroSection = () => {
               You can explore ans shop many differnt collection from various
               barands here.
             </p>
-            <Button Icon={BucketIcon} iconColor="#ffffff" title="Shop Now" />
+            <Link to="/shop">
+              <Button Icon={BucketIcon} iconColor="#ffffff" title="Shop Now" />
+            </Link>
           </div>
           <div className="w-[46%]">
             <div className="w-[424px] h-[542px] relative">

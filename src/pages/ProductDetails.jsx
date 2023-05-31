@@ -89,7 +89,7 @@ const ProductDetails = () => {
               </div>
             ) : (
               <h1 className="text-[30px] text-slate-700 font-semibold">
-                {data?.category} | <span>{data?.title}</span>
+                {data?.category.title} | <span>{data?.title}</span>
               </h1>
             )}
             <Row className="mt-7">
@@ -117,7 +117,7 @@ const ProductDetails = () => {
                 <Skeleton width="100px" height="30px" />
               ) : (
                 <p className="text-[18px] text-black ml-[5px]">
-                  {data?.category}
+                  {data?.category.title}
                 </p>
               )}
             </Row>

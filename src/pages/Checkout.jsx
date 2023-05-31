@@ -1,17 +1,17 @@
 import React, { useContext, useState } from 'react';
 import Button from '../components/common/Button';
 import Container from '../components/common/Container';
-import QtyCounter from '../components/common/QtyCounter';
 import Row from '../components/common/Row';
 import Form from '../components/Forms/Form';
 import Input from '../components/Forms/Input';
 import Layout from '../components/Layout';
 import CartContext from '../contextAPIs/cartConext';
-import { getProductById } from '../data';
 import { getPrice } from '../utils/cartManagement';
 import * as Yup from 'yup';
 import RadioButton from '../components/Forms/RadioButton';
 import { toast } from 'react-toastify';
+import CheckoutItem from '../components/Checkout/CheckoutItem';
+import { useEffectUnsafe } from '../hooks';
 
 const checkoutSchema = Yup.object().shape({
   name: Yup.string().required('Full name is required'),
@@ -28,14 +28,9 @@ const checkoutSchema = Yup.object().shape({
 const Checkout = () => {
   // =============== States and varibles section ================
   const { cartProduct } = useContext(CartContext);
-  const [values, setValues] = useState({});
+  const [price, setPrice] = useState(0);
 
   const vat = 0.1;
-  const products =
-    cartProduct?.map((item) => ({
-      ...getProductById(item.productId),
-      qty: item.qty,
-    })) || [];
 
   // =============== States and varibles section END ================
 
@@ -47,20 +42,44 @@ const Checkout = () => {
     toast.info('Order has been placed!');
   };
 
-  const getTotal = () => {
-    let total = 0;
-    products.forEach((product) => {
-      const price = getPrice(product.price);
-      total += price * product.qty;
-    });
-    return total;
+  const handlePrice = (p) => {
+    const proPrice = getPrice(p);
+    setPrice((prev) => prev + proPrice);
   };
 
   const getGrandTotal = () => {
-    const total = getTotal();
+    const total = price;
     const tax = total * vat;
     return total + tax;
   };
+
+  // useEffectUnsafe(() => {
+  //   if (cartProduct) {
+  //     // let tp = 0;
+  //     // cartProduct.map(async (item) => {
+  //     //   console.log('Started');
+  //     //   const res = await client.get(`/products/${item.productId}`);
+  //     //   tp += getPrice(res.data.price);
+  //     //   console.log(tp);
+  //     //   console.log('Eneded');
+  //     // });
+  //     // console.log('FINAL price', tp);
+  //     Promise.all(
+  //       cartProduct.map((item, idx) =>
+  //         client.get(`/products/${idx < 1 ? item.productId : -1}`)
+  //       )
+  //     )
+  //       .then((res) => {
+  //         let tp = 0;
+  //         res.forEach((item) => (tp += getPrice(item.data.price)));
+  //         console.log(tp);
+  //       })
+  //       .catch((error) => {
+  //         console.log('ERROR', error);
+  //       });
+  //   }
+  // });
+
   // =============== Event handlers and other function sction END ================
 
   return (
@@ -173,34 +192,12 @@ const Checkout = () => {
                 Order Summary
               </h6>
               <div className="bg-white py-[30px] w-full mt-[20px]">
-                {products.map((product) => (
-                  <Row
-                    className="justify-between w-full px-[30px]"
-                    key={product.id}
-                  >
-                    <Row className="w-1/2 mb-[20px]">
-                      <img
-                        className="w-[70px] h-[70px] object-contain"
-                        src={product.img}
-                        alt={product.title}
-                      />
-                      <div>
-                        <h6 className="text-[16px] text-black font-semibold">
-                          {product.title}
-                        </h6>
-                        <p className="text-[14px] text-slate-700 font-medium">
-                          {product.category}
-                        </p>
-                        <p className="text-[16px] text-slate-900 font-medium">
-                          {product.price}
-                        </p>
-                      </div>
-                    </Row>
-                    <QtyCounter
-                      data={product}
-                      className="!w-[40%] justify-end"
-                    />
-                  </Row>
+                {cartProduct?.map((product) => (
+                  <CheckoutItem
+                    product={product}
+                    key={product.productId}
+                    handlePrice={handlePrice}
+                  />
                 ))}
                 <div className="mt-[150px]">
                   <hr />
@@ -209,13 +206,13 @@ const Checkout = () => {
                       Subtotal
                     </p>
                     <p className="text-slate-800 text-[14px] font-bold">
-                      ${getTotal()}
+                      ${price}
                     </p>
                   </Row>
                   <Row className="px-[30px] justify-between items-center mt-[15px] mb-[20px]">
                     <p className="text-gray-500 text-[14px] font-medium">VAT</p>
                     <p className="text-slate-800 text-[14px] font-bold">
-                      ${vat * getTotal()}
+                      ${vat * price}
                     </p>
                   </Row>
                   <hr />

@@ -1,7 +1,6 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import Skeleton from 'react-loading-skeleton';
-import { getBestSeller, getBestSellerByCategoryId } from '../../data';
+import { useEffectUnsafe } from '../../hooks';
 import client from '../../service';
 import FilterIcon from '../../svgs/Filter';
 import Button from '../common/Button';
@@ -10,17 +9,32 @@ import ProductCard from '../common/ProductCard';
 import Row from '../common/Row';
 import ProductSkelton from './ProductSkelton';
 
-const BestSeller = () => {
+const BestSeller = ({ isShop = false }) => {
   const [products, setProducts] = useState();
   const [loadingProduct, setLoadingProducts] = useState(false);
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
   const [loadingCategories, setLoadingCat] = useState(false);
   const [categories, setCategories] = useState();
   const [selectedCategory, setSelectedCat] = useState(-1);
 
-  const getProducts = async (id = '') => {
+  const getProducts = async (id = '', nextPage = 1) => {
     try {
-      const res = await client.get(`/products${id ? `?cid=${id}` : ''}`);
-      setProducts(res.data);
+      const res = await client.get(
+        `/products?page=${nextPage || page}&pageSize=5&sortBy=rating&sort=desc${
+          id !== -1 ? `&cid=${id}` : ''
+        }`
+      );
+      setProducts((prev) => {
+        if (id === selectedCategory) {
+          return [...(prev || []), ...res.data.docs];
+        }
+        return res.data.docs;
+      });
+      if (isShop) {
+        setHasMore(res.data.hasNextPage);
+        setPage(res.data.nextPage);
+      }
       setLoadingProducts(false);
     } catch (error) {
       setLoadingProducts(false);
@@ -58,15 +72,17 @@ const BestSeller = () => {
     } mr-[40px] cursor-pointer hover:text-[#757575]`;
   };
 
-  useEffect(() => {
+  useEffectUnsafe(() => {
     getInitialData();
   }, []);
 
   return (
     <Container>
-      <h1 className="w-full text-center text-[50px] text-black font-medium mt-[140px]">
-        Best Seller Products
-      </h1>
+      {!isShop && (
+        <h1 className="w-full text-center text-[50px] text-black font-medium mt-[140px]">
+          Best Seller Products
+        </h1>
+      )}
       <Row className="my-[35px] justify-between items-center">
         <Row className="items-center">
           <p
@@ -83,13 +99,13 @@ const BestSeller = () => {
               <Skeleton width="150px" height="50px" />
             </>
           ) : (
-            categories?.map(({ id, name }) => (
+            categories?.map(({ _id, title }) => (
               <p
-                onClick={() => handleCategoryClick(id)}
-                key={id}
-                className={getCategoryClasses(id)}
+                onClick={() => handleCategoryClick(_id)}
+                key={_id}
+                className={getCategoryClasses(_id)}
               >
-                {name}
+                {title}
               </p>
             ))
           )}
@@ -107,7 +123,7 @@ const BestSeller = () => {
         ) : products?.length > 0 ? (
           products?.map((product) => (
             <ProductCard
-              key={product.id}
+              key={product._id}
               className="!w-[24%] mb-[24px]"
               data={product}
             />
@@ -118,6 +134,14 @@ const BestSeller = () => {
           </Row>
         )}
       </Row>
+      {isShop && hasMore && (
+        <Row className="justify-center mb-[30px]">
+          <Button
+            title="Load More"
+            onClick={() => getProducts(selectedCategory, page)}
+          />
+        </Row>
+      )}
     </Container>
   );
 };

@@ -6,7 +6,10 @@ import Row from './Row';
 const ProductCard = ({ className = '', data }) => {
   return (
     <div className={`w-full ${className}`}>
-      <Link className="w-full" to={`${PAGES_ROUTES.productDetails}/${data.id}`}>
+      <Link
+        className="w-full"
+        to={`${PAGES_ROUTES.productDetails}/${data._id}`}
+      >
         <img
           src={data.img}
           alt="product"
@@ -18,7 +21,7 @@ const ProductCard = ({ className = '', data }) => {
           </h6>
         </Row>
         <Row className="justify-between mt-[16px] mb-[10px] px-[10px]">
-          <p className="text-[16px] text-[#00000080]">{data.category}</p>
+          <p className="text-[16px] text-[#00000080]">{data.category.title}</p>
           <p className="text-[16px] text-black font-semibold">{data.price}</p>
         </Row>
       </Link>

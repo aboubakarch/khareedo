@@ -5,22 +5,22 @@ import Button from './Button';
 import Row from './Row';
 
 const QtyCounter = ({ data, className = '' }) => {
+  debugger;
+
   const { cartProduct, setCartProduct } = useContext(CartContext);
 
   const handleInc = () => {
-    const cp = handleIncrease(cartProduct, data?.id.toString());
+    const cp = handleIncrease(cartProduct, data?._id);
     setCartProduct(cp);
   };
 
   const handleDec = () => {
-    const cp = handleDecrease(cartProduct, data?.id.toString());
+    const cp = handleDecrease(cartProduct, data?._id);
     setCartProduct(cp);
   };
 
   const getQty = () => {
-    const prod = cartProduct?.find(
-      (item) => item.productId === data?.id.toString()
-    );
+    const prod = cartProduct?.find((item) => item.productId === data?._id);
     if (prod) return prod.qty;
     return 0;
   };

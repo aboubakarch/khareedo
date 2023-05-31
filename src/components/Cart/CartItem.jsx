@@ -11,7 +11,7 @@ const CartItem = ({ data }) => {
   const [loading, setLoading] = useState(false);
 
   const getSubTotal = () => {
-    if (product?.id) {
+    if (product?._id) {
       const price = getPrice(product?.price);
       const total = price * data?.qty;
       return `$${total}`;

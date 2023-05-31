@@ -13,8 +13,10 @@ const PopularProducts = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const res = await client.get('/products?count=5');
-      setProducts(res.data);
+      const res = await client.get(
+        '/products?page=1&pageSize=5&sortBy=rating&sort=desc'
+      );
+      setProducts(res.data.docs);
       setLoading(false);
     } catch (error) {
       setLoading(false);
@@ -39,10 +41,10 @@ const PopularProducts = () => {
             <Skeleton height={'100%'} />
           </div>
         ) : (
-          <Link to={`${PAGES_ROUTES.productDetails}/${products?.[0].id}`}>
+          <Link to={`${PAGES_ROUTES.productDetails}/${products?.[0]?._id}`}>
             <img
               className="w-[648px] h-[648px] object-cover cursor-pointer"
-              src={products?.[0].img}
+              src={products?.[0]?.img}
               alt="popular"
             />
           </Link>
@@ -55,8 +57,8 @@ const PopularProducts = () => {
                 </div>
               ))
             : products?.slice(1).map((product) => (
-                <div className="w-[46%] cursor-pointer" key={product.id}>
-                  <Link to={`${PAGES_ROUTES.productDetails}/${product.id}`}>
+                <div className="w-[46%] cursor-pointer" key={product._id}>
+                  <Link to={`${PAGES_ROUTES.productDetails}/${product._id}`}>
                     <img
                       src={product.img}
                       alt={product.title}
